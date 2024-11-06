@@ -435,7 +435,10 @@ export default function Home() {
 
       {/* footer */}
       <Footer />
-      <InfoComponent />
+
+      <Box className="no-print">
+        <InfoComponent />
+      </Box>
     </Box>
   );
 };
