@@ -1,431 +1,267 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Avatar, Box, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography, } from '@mui/material';
-import UploadFile from '@/components/UploadFile';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import React, { useState } from "react";
+import { Box, Divider, Stack, Typography } from "@mui/material";
+import UploadFile from "@/components/UploadFile";
 
-// Interfaces for data types
-interface Project {
-  projectName: string;
-  role: string;
-  from: string;
-  to: string;
-  customer: string;
-  projectDescription: string;
-  technicalInformation: string;
-  jobDescription: string;
+
+interface SectionTitleProps {
+  title: string;
 }
 
-interface DataType {
-  employee: {
-    name: string;
-    position: string;
-    email: string;
-    phone: string;
-    image: string;
-    biodata: {
-      profile: string;
-      objective: string;
-      placeOfBirth: string;
-      dateOfBirth: string;
-      gender: string;
-    };
-  };
-  histories: {
-    employment: {
-      employer: string;
-      position: string;
-      from: string;
-      to: string;
-    }[];
-    certification: {
-      title: string;
-      provider: string;
-      date: string;
-      duration: string;
-      certificate: string;
-    }[];
-    education: {
-      school: string;
-      degree: string;
-      subject: string;
-      from: string;
-      to: string;
-      GPA?: string;
-    }[];
-    project: Project[];
-  };
+interface PositionDetails {
+  projectTitle: string;
+  bullets: string[];
+}
+
+interface Position {
+  title: string;
+  duration: string;
+  details: PositionDetails[];
+}
+
+interface Employment {
+  company: string;
+  location: string;
+  summary: string;
+  skills: string;
+  positions: Position[];
+}
+
+interface Education {
+  degree: string;
+  school: string;
+  duration: string;
+}
+
+interface Certifications {
+  certifications: string[];
+}
+
+interface Employee {
+  name: string;
+  position: string;
+  email: string;
+  phone: string;
+  linkedin: string;
+}
+
+interface JsonData {
+  employee: Employee;
+  skills: string[];
+  employment: Employment[];
+  education: Education[];
+  certifications: string[];
 }
 
 
-
-// Project Section Component
-const ProjectSection = ({ projects }: { projects: Project[] }) => {
-  return (
-    <Stack direction="column" spacing={2} sx={{ width: '100%', pb: 4 }}>
-      <Typography variant="body1" sx={{ fontWeight: 'bold', pt: 1 }}>
-        PROJECT
-      </Typography>
-      <Box
-        sx={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          marginTop: '16px',
-          padding: '0',
-        }}
-      >
-        <Table className="project-table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
-          {projects.map((project, index) => (
-            <React.Fragment key={index}>
-              <TableHead
-                className="project-heading"
-                sx={{
-                  pageBreakInside: 'avoid',
-                  pageBreakBefore: index !== 0 ? 'always' : 'auto'
-                }}
-              >
-                <TableRow>
-                  <TableCell className="shaded-project-heading" colSpan={1}>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                      {index + 1}. Project Name:
-                    </Typography>
-                  </TableCell>
-                  <TableCell className="shaded-project-heading" colSpan={5}>
-                    <Typography variant="body2">
-                      <strong>{project.projectName}</strong>
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody sx={{ pageBreakInside: 'avoid' }}>
-                <TableRow>
-                  <TableCell className="shaded-cell">
-                    <Typography variant="body2">Role:</Typography>
-                  </TableCell>
-                  <TableCell className="white-background">
-                    <Typography variant="body2">{project.role}</Typography>
-                  </TableCell>
-                  <TableCell className="from-to-label">
-                    <Typography variant="body2">From:</Typography>
-                  </TableCell>
-                  <TableCell className="shaped-cell white-background">
-                    <Typography variant="body2">{project.from}</Typography>
-                  </TableCell>
-                  <TableCell className="from-to-label">
-                    <Typography variant="body2">To:</Typography>
-                  </TableCell>
-                  <TableCell className="shaped-cell white-background">
-                    <Typography variant="body2">{project.to}</Typography>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="shaded-cell">
-                    <Typography variant="body2">Customer:</Typography>
-                  </TableCell>
-                  <TableCell className="white-background" colSpan={5}>
-                    <Typography variant="body2">{project.customer}</Typography>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="shaded-cell">
-                    <Typography variant="body2">Project Desc:</Typography>
-                  </TableCell>
-                  <TableCell className="white-background" colSpan={5}>
-                    <Typography variant="body2">{project.projectDescription}</Typography>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="shaded-cell">
-                    <Typography variant="body2">Technical Info:</Typography>
-                  </TableCell>
-                  <TableCell className="white-background" colSpan={5}>
-                    <Typography variant="body2">{project.technicalInformation}</Typography>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="shaded-cell">
-                    <Typography variant="body2">Job Description:</Typography>
-                  </TableCell>
-                  <TableCell className="white-background" colSpan={5}>
-                    <ul>
-                      {project.jobDescription.split('\n').map((desc, idx) => (
-                        <li key={idx}>
-                          <Typography variant="body2">{desc}</Typography>
-                        </li>
-                      ))}
-                    </ul>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </React.Fragment>
-          ))}
-        </Table>
-      </Box>
-    </Stack>
-  );
-};
-
-// Education and Certification Section
-const EducationAndCertification = ({ data }: { data: DataType }) => (
-  <Stack direction="row" spacing={3} justifyContent="stretch" sx={{ pb: 2, pageBreakAfter: 'always' }}>
-    <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
-      <Typography variant="body1" sx={{ pt: 1 }}>
-        <strong>Course, Training</strong>
-      </Typography>
-      <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            {['No', 'Title', 'Provider', 'Date', 'Duration', 'Certificate'].map((header) => (
-              <TableCell key={header} sx={{ p: 1 }}>
-                <Typography variant="caption">
-                  <strong>{header}</strong>
-                </Typography>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.histories.certification.map((certification, index) => (
-            <TableRow key={index}>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{index + 1}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{certification.title}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{certification.provider}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{certification.date}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{certification.duration}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{certification.certificate}</Typography>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Stack>
-    <Divider orientation="vertical" flexItem sx={{ borderColor: '#000000', borderWidth: 1 }} />
-    <Stack direction="column" spacing={1} sx={{ flexBasis: '58%' }}>
-      <Typography variant="body1" sx={{ pt: 1 }}>
-        <strong>Education</strong>
-      </Typography>
-      <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            {['School', 'Degree', 'Subject', 'From', 'To'].map((header) => (
-              <TableCell key={header} sx={{ p: 0 }}>
-                <Typography variant="caption">
-                  <strong>{header}</strong>
-                </Typography>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.histories.education.map((education, index) => (
-            <TableRow key={index}>
-              <TableCell sx={{ p: 0 }}>
-                <Typography variant="caption">{education.school}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 2 }}>
-                <Typography variant="caption">{education.degree}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 0 }}>
-                <Typography variant="caption">{education.subject}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{education.from}</Typography>
-              </TableCell>
-              <TableCell sx={{ p: 1 }}>
-                <Typography variant="caption">{education.to}</Typography>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Stack>
-  </Stack>
+// Component to display section titles
+const SectionTitle = ({ title }: SectionTitleProps) => (
+  <Box sx={{ marginBottom: "10px", marginTop: "10px" }}>
+    <Typography
+      variant="h6"
+      sx={{
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        fontSize: "14px",
+        marginBottom: "5px",
+      }}
+    >
+      {title}
+    </Typography>
+    <Divider sx={{ borderColor: "#000", borderWidth: "1px" }} />
+  </Box>
 );
 
-// Main Page Component
-export default function Home() {
-  const [data, setData] = useState<DataType | null>(null);
-
-  const handleDataReceived = (receivedData: DataType) => {
-    setData(receivedData);
-  };
-
-  return (
+// Component to display skills
+const Skills = ({ skills }: { skills: string[] }) => (
+  <Box sx={{ padding: "0px 0" }}>
+    <SectionTitle title="Skills" />
     <Box>
-      {/* header */}
-      <Header />
+      <ul style={{ paddingLeft: "0", marginTop: "0", listStyle: "none" }}>
+        {skills.map((skill: string, index: number) => {
+          const [category, details] = skill.split(": ");
+          return (
+            <li key={index} style={{ display: "flex", marginBottom: "3px" }}>
+              <Typography
+                variant="body2"
+                sx={{ minWidth: "250px", paddingRight: "15px", whiteSpace: "nowrap" }}
+              >
+                {category}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  whiteSpace: "normal",
+                  lineHeight: 1.5,
+                  textIndent: "-7px",
+                  paddingLeft: "10px",
+                }}
+              >
+                : {details}
+              </Typography>
+            </li>
+          );
+        })}
+      </ul>
+    </Box>
+  </Box>
+);
 
-      {/* main */}
-      <Box component="table" sx={{ width: '100%' }}>
-        <Box component="thead">
-          <Box component="tr">
-            <Box component="td">
-              <Box className="page-header-space" />
-            </Box>
-          </Box>
-        </Box>
-        <Box component="tbody">
-          <Box component="tr">
-            <Box
-              component="td"
+// Component to display employment history
+const ProfessionalExperience = ({ employment }: { employment: Employment[] }) => {
+  return (
+    <Box sx={{ padding: '5px 0' }}>
+      <SectionTitle title="Professional Experience" /> {/* Judul dengan garis pemisah */}
+      {employment.map((job: Employment, index: number) => (
+        <Box key={index} sx={{ marginBottom: '30px' }}>
+          {/* Nama perusahaan dan lokasi */}
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Typography
+              variant="body1"
               sx={{
-                py: 2,
-                px: 9,
+                fontWeight: 'bold',
+                fontSize: '16px',
+                display: 'inline-block',
               }}
             >
-              {/* upload files */}
-              <Box sx={{ p: 2, width: '100%' }} className="no-print">
-                <UploadFile onDataReceived={handleDataReceived} />
-              </Box>
+              {job.company}
+            </Typography>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#000', fontSize: '16px', whiteSpace: 'nowrap' }}>
+              {job.location}
+            </Typography>
+          </Stack>
 
+          {/* Deskripsi singkat tentang perusahaan */}
+          <Typography variant="body2" sx={{ color: '#000', fontSize: '15px', marginBottom: '5px', marginTop: '5px' }}>
+            {job.summary}
+          </Typography>
 
-              {/* CV Output Area */}
-              {data && (
-                <Box sx={{ p: 2, width: '100%' }}>
-                  <Stack direction="column" spacing={3} alignItems="stretch">
-                    <Stack direction="row" alignItems="center">
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h5" sx={{ py: 1 }}>
-                          <strong>{data?.employee.name || 'No Name'}</strong>
+          {/* Daftar skill yang digunakan di pekerjaan tersebut */}
+          <Typography variant="body2" sx={{ color: '#000', fontSize: '15px', marginBottom: '10px', fontStyle: 'italic' }}>
+            {job.skills}
+          </Typography>
+
+          {/* Posisi yang dijabat di perusahaan */}
+          {job.positions.map((position: Position, idx: number) => (
+            <Box key={idx} sx={{ marginTop: '8px', marginBottom: '8px' }}>
+              <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ marginBottom: '2px' }}>
+                {/* Nama posisi dan durasi */}
+                <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#000', fontSize: '15px' }}>
+                  {position.title}
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#000', fontSize: '15px', whiteSpace: 'nowrap' }}>
+                  {position.duration}
+                </Typography>
+              </Stack>
+
+              {/* Detail proyek di dalam posisi tersebut */}
+              {position.details.map((detail: PositionDetails, i: number) => (
+                <Box key={i} sx={{ marginTop: '10px', marginBottom: '10px' }}>
+                  {/* Judul proyek dengan garis di bawah */}
+                  <Typography variant="body2" sx={{ color: '#000', fontSize: '15px', lineHeight: 1.5 }}>
+                    {detail.projectTitle}
+                  </Typography>
+                  <Divider sx={{ borderColor: '#000', borderWidth: '1px', marginBottom: '10px' }} />
+                  <ul style={{ paddingLeft: '20px', marginTop: '0' }}>
+                    {/* Daftar poin-poin pencapaian */}
+                    {detail.bullets.map((bullet: string, j: number) => (
+                      <li key={j} style={{ marginBottom: '5px' }}>
+                        <Typography variant="body2" sx={{ color: '#000', fontSize: '15px', lineHeight: 1.5 }}>
+                          {bullet}
                         </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-                        <Typography variant="subtitle1">{data?.employee.position || 'No Position'}</Typography>
-                        <Typography variant="subtitle2">{data?.employee.email || 'No Email'}</Typography>
-                      </Box>
-                      <Box>
-                        <Avatar src={data?.employee.image || ''} sx={{ height: 150, width: 150 }}>
-                          {data?.employee.image ? 'Talent Image' : 'No Image'}
-                        </Avatar>
-                      </Box>
-                    </Stack>
-
-                    <Stack direction="row" spacing={2} justifyContent="stretch">
-                      {/* Employment Section */}
-                      <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
-                        <Typography variant="body1" sx={{ pt: 1 }}>
-                          <strong>Employment</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-                        <Stack direction="column" spacing={1}>
-                          {data?.histories.employment.map((job, index) => (
-                            <Box
-                              key={index}
-                              sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'flex-start',
-                              }}
-                            >
-                              <Box>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                                  {job.employer}
-                                </Typography>
-                                <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                                  {job.position}
-                                </Typography>
-                              </Box>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'flex-end',
-                                  textAlign: 'right',
-                                }}
-                              >
-                                <Typography variant="body2">
-                                  {job.from} - {job.to ? job.to : 'Present'}
-                                </Typography>
-                              </Box>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Stack>
-
-                      <Divider orientation="vertical" flexItem sx={{ borderColor: '#000000', borderWidth: 1 }} />
-
-                      {/* Objective, Skills, and Personal Detail Section */}
-                      <Stack direction="column" spacing={1} sx={{ flexBasis: '57%' }}>
-                        <Typography variant="body1" sx={{ pt: 1 }}>
-                          <strong>Objective</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-                        <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
-                          {data?.employee.biodata?.profile || 'No profile available.'}
-                        </Typography>
-
-                        <Typography variant="body2" sx={{ pt: 2 }}>
-                          <strong>Keahlian saya:</strong> {data?.employee.biodata?.objective || 'No skills listed.'}
-                        </Typography>
-
-                        <Typography variant="body1" sx={{ pt: 1 }}>
-                          <strong>Personal Detail</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 0 }} />
-                        <Table size="small">
-                          <TableBody>
-                            <TableRow>
-                              <TableCell sx={{ p: 0, border: 0 }}>
-                                <Typography variant="body2">
-                                  <strong>Place of Birth:</strong> {data?.employee.biodata?.placeOfBirth || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell sx={{ p: 0, border: 0 }}>
-                                <Typography variant="body2">
-                                  <strong>Gender:</strong> {data?.employee.biodata?.gender || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell sx={{ p: 0, border: 0 }}>
-                                <Typography variant="body2">
-                                  <strong>Date of Birth:</strong> {data?.employee.biodata?.dateOfBirth || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </Stack>
-                    </Stack>
-
-                    {/* education and project section */}
-                    <EducationAndCertification data={data} />
-                    <ProjectSection projects={data.histories.project} />
-                  </Stack>
+                      </li>
+                    ))}
+                  </ul>
                 </Box>
-              )}
+              ))}
             </Box>
-          </Box>
+          ))}
         </Box>
-
-        <Box component="tfoot">
-          <Box component="tr">
-            <Box component="td">
-              <Box className="page-footer-space" />
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-
-
-      {/* footer */}
-      <Footer />
+      ))}
     </Box>
   );
 };
 
+// Component to display education
+const Education = ({ education }: { education: Education[] }) => (
+  <Box sx={{ marginTop: "8px" }}>
+    <SectionTitle title="Education" />
+    {education.map((edu: Education, index: number) => (
+      <Box key={index} sx={{ marginBottom: "8px" }}>
+        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "15px" }}>
+          {edu.degree}
+        </Typography>
+        <Typography variant="body1" sx={{ fontSize: "15px", marginTop: "3px" }}>
+          {edu.school} - {edu.duration}
+        </Typography>
+      </Box>
+    ))}
+  </Box>
+);
+
+// Component to display certifications
+const Certifications = ({ certifications }: { certifications: string[] }) => (
+  <Box sx={{ marginTop: "17px" }}>
+    <SectionTitle title="Certifications" />
+    <ul style={{ paddingLeft: "22px", margin: 0 }}>
+      {certifications.map((cert: string, index: number) => (
+        <li key={index} style={{ marginBottom: "3px", listStyle: "disc", fontWeight: "bold" }}>
+          <Typography variant="body1" sx={{ fontSize: "15px", lineHeight: 1.5 }}>
+            {cert}
+          </Typography>
+        </li>
+      ))}
+    </ul>
+  </Box>
+);
+
+// Main component
+export default function Home() {
+  const [data, setData] = useState<JsonData | null>(null);
+  const handleDataReceived = (receivedData: DataType) => {
+    setData(receivedData);
+  };
+
+
+  return (
+    <Box sx={{ padding: "30px", fontFamily: "Arial, sans-serif", backgroundColor: "#ffffff", lineHeight: 1.5 }} className="page">
+      {/* Template and Input JSON Data */}
+      <Box sx={{ marginBottom: "20px" }} className="no-print">
+        {/* upload files */}
+        <UploadFile onDataReceived={handleDataReceived} />
+      </Box>
+
+      {/* Conditional rendering for content after JSON submission */}
+      {data && (
+        <>
+          {/* Header Section */}
+          <Box sx={{ textAlign: "center", marginBottom: "10px" }}>
+            <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "18px", letterSpacing: "1.2px" }}>
+              {data.employee.name}
+            </Typography>
+            <Typography variant="h6" sx={{ fontSize: "14px", fontWeight: "bold" }}>
+              {data.employee.position}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "11px" }}>
+              {data.employee.email} • {data.employee.phone} • {data.employee.linkedin}
+            </Typography>
+          </Box>
+
+          {/* Skills Section */}
+          <Skills skills={data.skills} />
+
+          {/* Professional Experience Section */}
+          <ProfessionalExperience employment={data.employment} />
+
+          {/* Education Section */}
+          <Education education={data.education} />
+
+          {/* Certifications Section */}
+          <Certifications certifications={data.certifications} />
+        </>
+      )}
+    </Box>
+  );
+};
 

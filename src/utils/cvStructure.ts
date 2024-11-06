@@ -11,7 +11,7 @@ export const CV_STRUCTURE = `{
       "placeOfBirth": "Place of Birth",
       "dateOfBirth": "YYYY-MM-DD",
       "gender": "Male/Female"
-    }
+    } 
   },
   "histories": {
     "employment": [
