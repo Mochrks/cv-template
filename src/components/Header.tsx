@@ -1,10 +1,24 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import Image from 'next/image';
 
 const Header = () => (
-    <Box className="page-header">
-        <img src="/Header.png" alt="" width="100%" height="50px" />
-        <Box component="img" src="/Logo.svg" alt="" sx={{ height: 45, position: 'absolute', top: 58, left: 70 }} />
+    <Box className="page-header" sx={{ position: 'relative' }}>
+        <Image
+            src="/Header.png"
+            alt=""
+            layout="responsive"
+            width={1000}
+            height={50}
+        />
+        <Box sx={{ position: 'absolute', top: 58, left: 70, width: 45, height: 45 }}>
+            <Image
+                src="/Logo.svg"
+                alt=""
+                layout="fill"
+                objectFit="contain"
+            />
+        </Box>
     </Box>
 );
 
