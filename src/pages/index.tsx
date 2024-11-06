@@ -5,6 +5,8 @@ import { Avatar, Box, Divider, Stack, Table, TableBody, TableCell, TableHead, Ta
 import UploadFile from '@/components/UploadFile';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import InfoComponent from '@/components/InfoComponent';
+
 
 // Interfaces for data types
 interface Project {
@@ -434,6 +436,10 @@ export default function Home() {
 
       {/* footer */}
       <Footer />
+
+      <Box className="no-print">
+        <InfoComponent />
+      </Box>
     </Box>
   );
 };
