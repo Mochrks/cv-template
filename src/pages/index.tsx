@@ -5,6 +5,14 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import UploadFile from "@/components/UploadFile";
 import InfoComponent from "@/components/InfoComponent";
 
+interface DataType {
+
+  certifications: string[];
+  education: Education[];
+  employee: Employee;
+  employment: Employment[];
+  skills: string[];
+}
 
 interface SectionTitleProps {
   title: string;
