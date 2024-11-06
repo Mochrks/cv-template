@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import UploadFile from "@/components/UploadFile";
+import InfoComponent from "@/components/InfoComponent";
 
 
 interface SectionTitleProps {
@@ -261,6 +262,10 @@ export default function Home() {
           <Certifications certifications={data.certifications} />
         </>
       )}
+
+      <Box className="no-print">
+        <InfoComponent />
+      </Box>
     </Box>
   );
 };
