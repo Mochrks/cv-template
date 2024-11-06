@@ -1,8 +1,17 @@
 
 import React from 'react';
-import { Box, Divider, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import { Divider, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 
-const ObjectiveDetail = ({ biodata }) => (
+interface Biodata {
+    profile: string;
+    objective: string;
+    placeOfBirth: string;
+    dateOfBirth: string;
+    gender: string;
+}
+
+const ObjectiveDetail = ({ biodata }: { biodata: Biodata }) => (
+
     <Stack direction="column" spacing={1} sx={{ flexBasis: '57%' }}>
         <Typography variant="body1" sx={{ pt: 1 }}>
             <strong>Objective</strong>

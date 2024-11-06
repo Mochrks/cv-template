@@ -266,8 +266,6 @@ export default function Home() {
     setData(receivedData);
   };
 
-
-
   return (
     <Box>
       {/* header */}

@@ -1,8 +1,14 @@
-
 import React from 'react';
 import { Avatar, Box, Divider, Stack, Typography } from '@mui/material';
 
-const EmployeeInfo = ({ employee }) => (
+interface Employee {
+    name: string;
+    position: string;
+    email: string;
+    image: string;
+}
+
+const EmployeeInfo = ({ employee }: { employee: Employee }) => (
     <Stack direction="column" spacing={3} alignItems="stretch">
         <Stack direction="row" alignItems="center">
             <Box sx={{ flexGrow: 1 }}>

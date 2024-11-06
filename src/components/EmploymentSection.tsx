@@ -2,7 +2,14 @@
 import React from 'react';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 
-const EmploymentSection = ({ employment }) => (
+interface Employment {
+    employer: string;
+    position: string;
+    from: string;
+    to?: string; // optional
+}
+
+const EmploymentSection = ({ employment }: { employment: Employment[] }) => {
     <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
         <Typography variant="body1" sx={{ pt: 1 }}>
             <strong>Employment</strong>
@@ -28,6 +35,7 @@ const EmploymentSection = ({ employment }) => (
             ))}
         </Stack>
     </Stack>
-);
+}
+
 
 export default EmploymentSection;

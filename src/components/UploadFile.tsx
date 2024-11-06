@@ -46,7 +46,7 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
     const [files, setFiles] = useState<FileItem | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [output, setOutput] = useState('');
+    // const [output, setOutput] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleDrag = (e: React.DragEvent) => {
@@ -145,13 +145,13 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
             }
 
             const result = await jsonResponse.json();
-            setOutput(JSON.stringify(result, null, 2));
+            // setOutput(JSON.stringify(result, null, 2));
             onDataReceived(result);
             console.log(result);
             console.log('JSON generated successfully');
         } catch (error) {
             console.error('Error:', error);
-            setOutput(`Error processing file: ${error}`);
+            // setOutput(`Error processing file: ${error}`);
         } finally {
             setIsLoading(false);
         }
