@@ -11,7 +11,7 @@ import {
 import { styled } from '@mui/material/styles';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { useTheme } from '@mui/material';
-
+import { Theme } from '@mui/material/styles';
 interface FileItem {
     name: string;
     content: string;
@@ -19,7 +19,7 @@ interface FileItem {
 }
 
 // Styled components
-const DropZone = styled(Paper)(({ theme, dragActive }: { theme: any, dragActive: boolean }) => ({
+const DropZone = styled(Paper)(({ theme, dragActive }: { theme: Theme, dragActive: boolean }) => ({
     border: `2px dashed ${dragActive ? theme.palette.primary.main : theme.palette.grey[300]}`,
     padding: theme.spacing(4),
     textAlign: 'center',
