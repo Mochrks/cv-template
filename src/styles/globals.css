@@ -1,0 +1,250 @@
+@page {
+  margin: 0mm;
+}
+
+@media screen {
+  body {
+    margin: auto;
+    width: 210mm;
+  }
+
+  .page-header,
+  .page-footer,
+  .page-header-space,
+  .page-footer-space {
+    display: none;
+  }
+}
+
+.project-container {
+  padding: 16px;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  page-break-inside: avoid; /* Tambahkan ini untuk mencegah pemisahan proyek */
+}
+
+@media print {
+  /* Setiap proyek dimulai di halaman baru */
+  .project-container {
+    page-break-before: always !important;
+    break-before: always !important;
+    margin-bottom: 10px;
+  }
+
+  /* Pastikan tabel tidak dipisah antara halaman */
+  table, tr, td {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Hindari pengulangan elemen dari proyek sebelumnya di halaman baru */
+  .project-heading {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+  }
+
+  /* Pastikan seluruh detail proyek tetap berada dalam satu halaman */
+  .project-details {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Pengaturan untuk header dan footer di setiap halaman */
+  .page-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #d3d3d3;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    z-index: 1000;
+    
+  }
+
+  .page-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #d3d3d3;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    z-index: 1000;
+  }
+
+  .page-header-space {
+    height: 100px; /* Tinggi disesuaikan dengan header */
+  }
+
+  .page-footer-space {
+    height: 50px; /* Tinggi disesuaikan dengan footer */
+  }
+
+  /* Konten utama yang diatur agar menyesuaikan jarak header dan footer */
+  .content {
+    margin-top: 120px; /* Jarak dari header */
+    margin-bottom: 60px; /* Jarak dari footer */
+    min-height: calc(100vh - 160px); /* Memastikan konten memenuhi halaman, memperhitungkan tinggi header dan footer */
+  }
+
+  /* Hide the JSON input section on print */
+  .no-print {
+    display: none !important;
+  }
+}
+
+
+@media screen {
+  .page-header,
+  .page-footer {
+    display: none;
+  }
+}
+
+/* Styling khusus untuk tabel proyek */
+.shaded-project-heading {
+  background-color: #d3d3d3 !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  border-color: white !important; /* Ubah ini agar garis hilang */
+  white-space: nowrap;
+  border-left: none !important; /* Tambahkan ini untuk memastikan tidak ada garis di sisi kiri */
+}
+
+.white-background {
+  background-color: white !important;
+  color: black !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  border-color: white !important;
+}
+
+.from-to-label {
+  background-color: #d3d3d3 !important;
+  border-color: white !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+.shaded-cell {
+  background-color: #d3d3d3 !important;
+  border-color: white !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  border-left: none !important; /* Tambahkan ini juga jika dibutuhkan */
+}
+
+/* Tabel proyek */
+.project-table {
+  width: 100%;
+  border-collapse: collapse; /* Menyatukan semua border */
+  margin-bottom: 20px;
+  border: none; /* Hilangkan border luar */
+}
+
+.project-table th,
+.project-table td {
+  border: 1px solid #d3d3d3; /* Border di dalam tabel */
+  padding: 8px;
+  vertical-align: top;
+}
+
+.project-table th {
+  background-color: #d3d3d3;
+  font-weight: bold;
+  border-color: #d3d3d3; /* Gunakan warna yang lebih lembut */
+}
+
+.project-table td ul {
+  padding-left: 20px;
+}
+
+.project-table td ul li {
+  margin-bottom: 5px;
+}
+
+/* Styling untuk sel yang berbentuk */
+.shaped-cell {
+  border: 1px solid white;
+  padding: 6px 12px;
+  text-align: center;
+  background-color: #b0b0b0;
+  border-radius: 8px;
+  min-width: 100px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading untuk proyek */
+.project-heading {
+  background-color: #b0b0b0;
+  padding: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  border-color: white;
+}
+
+.shaded-cell {
+  background-color: #d3d3d3;
+  font-weight: normal;
+  padding: 10px;
+  border-color: white;
+}
+
+.project-table th,
+.project-table td strong {
+  font-weight: bold;
+}
+
+.project-table td {
+  vertical-align: top;
+  font-weight: normal;
+  border-color: white;
+}
+
+.project-table .shaped-cell {
+  background-color: white !important;
+  text-align: center;
+  padding: 8px;
+  border-radius: 5px;
+  font-weight: normal;
+  width: 100px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  border-color: white !important;
+}
+
+/* Penambahan tambahan untuk fleksibilitas dan responsivitas */
+.project-container {
+  padding: 16px;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+/* Responsif untuk proyek */
+@media (max-width: 600px) {
+  .project-container {
+    padding: 12px;
+    gap: 12px;
+  }
+}
