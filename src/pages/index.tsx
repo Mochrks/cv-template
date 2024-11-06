@@ -18,6 +18,7 @@ interface Project {
   jobDescription: string;
 }
 
+// Interfaces data types
 interface DataType {
   employee: {
     name: string;
@@ -59,7 +60,112 @@ interface DataType {
   };
 }
 
+// Personal Info Section Component
+const PersonalInfoSection = ({ data }: { data: DataType }) => (
+  <Stack direction="row" alignItems="center">
+    <Box sx={{ flexGrow: 1 }}>
+      <Typography variant="h5" sx={{ py: 1 }}>
+        <strong>{data?.employee.name || 'No Name'}</strong>
+      </Typography>
+      <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
+      <Typography variant="subtitle1">{data?.employee.position || 'No Position'}</Typography>
+      <Typography variant="subtitle2">{data?.employee.email || 'No Email'}</Typography>
+    </Box>
+    <Box>
+      <Avatar src={data?.employee.image || ''} sx={{ height: 150, width: 150 }}>
+        {data?.employee.image ? 'Talent Image' : 'No Image'}
+      </Avatar>
+    </Box>
+  </Stack>
+);
 
+// Employment Section Component
+const EmploymentSection = ({ employment }: { employment: DataType['histories']['employment'] }) => (
+  <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
+    <Typography variant="body1" sx={{ pt: 1 }}>
+      <strong>Employment</strong>
+    </Typography>
+    <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
+    <Stack direction="column" spacing={1}>
+      {employment.map((job, index) => (
+        <Box
+          key={index}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+          }}
+        >
+          <Box>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              {job.employer}
+            </Typography>
+            <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
+              {job.position}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              textAlign: 'right',
+            }}
+          >
+            <Typography variant="body2">
+              {job.from} - {job.to ? job.to : 'Present'}
+            </Typography>
+          </Box>
+        </Box>
+      ))}
+    </Stack>
+  </Stack>
+);
+
+// Objective Section Component
+const ObjectiveSection = ({ biodata }: { biodata: DataType['employee']['biodata'] }) => (
+  <Stack direction="column" spacing={1} sx={{ flexBasis: '57%' }}>
+    <Typography variant="body1" sx={{ pt: 1 }}>
+      <strong>Objective</strong>
+    </Typography>
+    <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
+    <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+      {biodata?.profile || 'No profile available.'}
+    </Typography>
+
+    <Typography variant="body2" sx={{ pt: 2 }}>
+      <strong>Keahlian saya:</strong> {biodata?.objective || 'No skills listed.'}
+    </Typography>
+
+    <Typography variant="body1" sx={{ pt: 1 }}>
+      <strong>Personal Detail</strong>
+    </Typography>
+    <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 0 }} />
+    <Table size="small">
+      <TableBody>
+        <TableRow>
+          <TableCell sx={{ p: 0, border: 0 }}>
+            <Typography variant="body2">
+              <strong>Place of Birth:</strong> {biodata?.placeOfBirth || 'N/A'}
+            </Typography>
+          </TableCell>
+          <TableCell sx={{ p: 0, border: 0 }}>
+            <Typography variant="body2">
+              <strong>Gender:</strong> {biodata?.gender || 'N/A'}
+            </Typography>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell sx={{ p: 0, border: 0 }}>
+            <Typography variant="body2">
+              <strong>Date of Birth:</strong> {biodata?.dateOfBirth || 'N/A'}
+            </Typography>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  </Stack>
+);
 
 // Project Section Component
 const ProjectSection = ({ projects }: { projects: Project[] }) => {
@@ -270,7 +376,7 @@ export default function Home() {
       {/* header */}
       <Header />
 
-      {/* main */}
+      {/* main components */}
       <Box component="table" sx={{ width: '100%' }}>
         <Box component="thead">
           <Box component="tr">
@@ -298,108 +404,12 @@ export default function Home() {
               {data && (
                 <Box sx={{ p: 2, width: '100%' }}>
                   <Stack direction="column" spacing={3} alignItems="stretch">
-                    <Stack direction="row" alignItems="center">
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h5" sx={{ py: 1 }}>
-                          <strong>{data?.employee.name || 'No Name'}</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-                        <Typography variant="subtitle1">{data?.employee.position || 'No Position'}</Typography>
-                        <Typography variant="subtitle2">{data?.employee.email || 'No Email'}</Typography>
-                      </Box>
-                      <Box>
-                        <Avatar src={data?.employee.image || ''} sx={{ height: 150, width: 150 }}>
-                          {data?.employee.image ? 'Talent Image' : 'No Image'}
-                        </Avatar>
-                      </Box>
-                    </Stack>
+                    <PersonalInfoSection data={data} />
 
                     <Stack direction="row" spacing={2} justifyContent="stretch">
-                      {/* Employment Section */}
-                      <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
-                        <Typography variant="body1" sx={{ pt: 1 }}>
-                          <strong>Employment</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-                        <Stack direction="column" spacing={1}>
-                          {data?.histories.employment.map((job, index) => (
-                            <Box
-                              key={index}
-                              sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'flex-start',
-                              }}
-                            >
-                              <Box>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                                  {job.employer}
-                                </Typography>
-                                <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                                  {job.position}
-                                </Typography>
-                              </Box>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'flex-end',
-                                  textAlign: 'right',
-                                }}
-                              >
-                                <Typography variant="body2">
-                                  {job.from} - {job.to ? job.to : 'Present'}
-                                </Typography>
-                              </Box>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Stack>
-
+                      <EmploymentSection employment={data.histories.employment} />
                       <Divider orientation="vertical" flexItem sx={{ borderColor: '#000000', borderWidth: 1 }} />
-
-                      {/* Objective, Skills, and Personal Detail Section */}
-                      <Stack direction="column" spacing={1} sx={{ flexBasis: '57%' }}>
-                        <Typography variant="body1" sx={{ pt: 1 }}>
-                          <strong>Objective</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-                        <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
-                          {data?.employee.biodata?.profile || 'No profile available.'}
-                        </Typography>
-
-                        <Typography variant="body2" sx={{ pt: 2 }}>
-                          <strong>Keahlian saya:</strong> {data?.employee.biodata?.objective || 'No skills listed.'}
-                        </Typography>
-
-                        <Typography variant="body1" sx={{ pt: 1 }}>
-                          <strong>Personal Detail</strong>
-                        </Typography>
-                        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 0 }} />
-                        <Table size="small">
-                          <TableBody>
-                            <TableRow>
-                              <TableCell sx={{ p: 0, border: 0 }}>
-                                <Typography variant="body2">
-                                  <strong>Place of Birth:</strong> {data?.employee.biodata?.placeOfBirth || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell sx={{ p: 0, border: 0 }}>
-                                <Typography variant="body2">
-                                  <strong>Gender:</strong> {data?.employee.biodata?.gender || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell sx={{ p: 0, border: 0 }}>
-                                <Typography variant="body2">
-                                  <strong>Date of Birth:</strong> {data?.employee.biodata?.dateOfBirth || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </Stack>
+                      <ObjectiveSection biodata={data.employee.biodata} />
                     </Stack>
 
                     {/* education and project section */}
