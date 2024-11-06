@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import '@/styles/globals.css';
 import { Avatar, Box, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography, } from '@mui/material';
 import UploadFile from '@/components/UploadFile';
 import Header from '@/components/Header';

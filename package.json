@@ -14,6 +14,7 @@
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.16.7",
     "html2canvas": "^1.4.1",
+    "my-project": "file:",
     "next": "15.0.2",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
