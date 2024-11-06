@@ -19,13 +19,16 @@ interface FileItem {
 }
 
 // Styled components
-const DropZone = styled(Paper)(({ theme, dragActive }: { theme: Theme, dragActive: boolean }) => ({
+const DropZone = styled(Paper, {
+    shouldForwardProp: (prop) => prop !== 'dragActive'
+})<{ theme: Theme; dragActive: boolean }>(({ theme, dragActive }) => ({
     border: `2px dashed ${dragActive ? theme.palette.primary.main : theme.palette.grey[300]}`,
     padding: theme.spacing(4),
     textAlign: 'center',
     cursor: 'pointer',
     backgroundColor: 'transparent'
 }));
+
 
 // const JsonOutput = styled(Paper)(({ theme }) => ({
 //     padding: theme.spacing(2),
@@ -38,6 +41,7 @@ const DropZone = styled(Paper)(({ theme, dragActive }: { theme: Theme, dragActiv
 // }));
 
 interface UploadFileProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onDataReceived: (data: any) => void;
 }
 
@@ -164,6 +168,7 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
                 <Typography variant="h3" component="h1" align="center" gutterBottom>
                     Upload File
                 </Typography>
+
 
                 <DropZone
                     theme={theme}
