@@ -6,6 +6,8 @@ import UploadFile from '@/components/UploadFile';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import InfoComponent from '@/components/InfoComponent';
+import FileSearchForm from '@/components/FileSearchForm';
+import FileUploader from '@/components/FileUploader';
 
 
 // Interfaces for data types
@@ -436,6 +438,18 @@ export default function Home() {
 
       {/* footer */}
       <Footer />
+
+
+      {/* <div>
+        <h1>Summary pdf</h1>
+        <FileSearchForm />
+      </div> */}
+
+
+      {/* <div>
+        <FileUploader />
+      </div> */}
+
 
       <Box className="no-print">
         <InfoComponent />
