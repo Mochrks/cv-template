@@ -1,13 +1,71 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { CV_STRUCTURE_INSTRUCTIONS } from '@/utils/cvStructureAssistant';
+import multer from 'multer';
+import FormData from 'form-data';
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY; 
-const OPENAI_API_URL = 'https://api.openai.com/v1';
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+if (!OPENAI_API_KEY) {
+  throw new Error("Missing OPENAI_API_KEY in environment variables");
+}
+const OPENAI_API_URL = process.env.API_URL;
 const AUTH_HEADER = { Authorization: `Bearer ${OPENAI_API_KEY}` };
-const ASSISTANT_ID = 'asst_D161XqVlfbSRY6Pz6hVhmwUz'; 
+const ASSISTANT_ID =  process.env.ASSISTANT_ID; 
+
+
+const upload = multer({ storage: multer.memoryStorage() }); 
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+const uploadFile = async (req: NextApiRequest, res: NextApiResponse) => {
+  //  middleware multer
+  upload.single('file')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: 'File upload error' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'File is required' });
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('purpose', 'assistants');
+      formData.append('file', req.file.buffer, {
+        filename: req.file.originalname, 
+        contentType: req.file.mimetype, 
+      });
+
+      const uploadResponse = await axios.post(
+        `${OPENAI_API_URL}/files`,
+        formData,
+        {
+          headers: {
+            ...AUTH_HEADER,
+            ...formData.getHeaders(),
+          },
+        }
+      );
+
+      const fileUploadId = uploadResponse.data.id;
+      console.log('Uploaded file:', fileUploadId);
+      res.status(200).json({ fileUploadId });
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      res.status(500).json({ error: 'Failed to upload file' });
+    }
+  });
+};
 
 async function createThread(req: NextApiRequest, res: NextApiResponse) {
+  const { fileUploadId } = req.body;
+
+
   try {
     const createThreadResponse = await axios.post(
       `${OPENAI_API_URL}/threads`,
@@ -18,7 +76,7 @@ async function createThread(req: NextApiRequest, res: NextApiResponse) {
             content: CV_STRUCTURE_INSTRUCTIONS,
             attachments: [
               {
-                file_id: req.body.file_id,
+                file_id: fileUploadId,
                 tools: [{ type: 'code_interpreter' }],
               },
             ],
@@ -44,7 +102,7 @@ async function createThread(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function runThread(req: NextApiRequest, res: NextApiResponse) {
-  const { threadId } = req.body;
+  const { threadId } = req.query;
 
   try {
     const createThreadResponse = await axios.post(
@@ -86,7 +144,7 @@ async function getThreadMessages(req: NextApiRequest, res: NextApiResponse) {
       }
     );
 
-    const messages = response.data.data;
+    const messages = response.data;
     console.log('Messages:', messages);
     //  res.status(200).json(messages);
     // Cari pesan dari assistant dengan tipe text
@@ -96,20 +154,17 @@ async function getThreadMessages(req: NextApiRequest, res: NextApiResponse) {
 
     if (assistantMessage) {
       const jsonContent = assistantMessage.content[0].text.value;
-
-      // Periksa apakah ada format JSON di dalam text.value
       const jsonMatch = jsonContent.match(/```json([\s\S]*?)```/);
       
       if (jsonMatch) {
-        // Parsing JSON response jika format JSON ditemukan
+        // Parsing JSON response 
         const parsedJSON = JSON.parse(jsonMatch[1].trim());
         res.status(200).json(parsedJSON);
       } else {
-        // Jika tidak ada format JSON, kembalikan messages secara langsung
+        //callback response
         res.status(200).json(messages);
       }
     } else {
-      // Jika response dari assistant berupa array kosong
       res.status(200).json(messages);
     }
 
@@ -120,10 +175,36 @@ async function getThreadMessages(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+async function checkRunStatus(req: NextApiRequest, res: NextApiResponse) {
+  const { threadId, runId } = req.query;
+
+  try {
+    const response = await axios.get(
+      `${OPENAI_API_URL}/threads/${threadId}/runs/${runId}`,
+      {
+        headers: {
+          ...AUTH_HEADER,
+          'Content-Type': 'application/json',
+          'OpenAI-Beta': 'assistants=v2',
+        },
+      }
+    );
+
+    const runStatus = response.data;
+    console.log('Run Status:', runStatus);
+    res.status(200).json(runStatus);
+  } catch (error) {
+    console.error('Error checking run status:', error);
+    res.status(500).json({ error: 'Failed to check run status' });
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'POST':
-      if (req.query.action === 'createThread') {
+      if (req.query.action === 'uploadFile') {
+        await uploadFile(req, res);
+      } else if (req.query.action === 'createThread') {
         await createThread(req, res);
       } else if (req.query.action === 'runThread') {
         await runThread(req, res);
@@ -132,6 +213,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       if (req.query.action === 'getThreadMessages') {
         await getThreadMessages(req, res);
+      }else if (req.query.action === 'checkRunStatus') {
+        await checkRunStatus(req, res);
       }
       break;
     default:
