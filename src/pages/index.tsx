@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import UploadFile from "@/components/UploadFile";
 import InfoComponent from "@/components/InfoComponent";
@@ -225,12 +225,93 @@ const Certifications = ({ certifications }: { certifications: string[] }) => (
   </Box>
 );
 
+
+
+const template = [
+  {
+    "employee": {
+      "name": "Budi Santoso",
+      "position": "Software Engineer",
+      "email": "budi.santoso@example.com",
+      "phone": "+62 812-3456-7890",
+      "linkedin": "https://www.linkedin.com/in/budi-santoso"
+    },
+    "skills": [
+      "Programming: Java, Python, JavaScript",
+      "Web Development: HTML, CSS, React",
+      "Database Management: MySQL, MongoDB"
+    ],
+    "employment": [
+      {
+        "company": "PT. Teknologi Canggih",
+        "location": "Jakarta, Indonesia",
+        "summary": "Perusahaan yang bergerak di bidang pengembangan perangkat lunak.",
+        "skills": "Java, Spring Boot, REST API",
+        "positions": [
+          {
+            "title": "Senior Software Engineer",
+            "duration": "Januari 2020 - Sekarang",
+            "details": [
+              {
+                "projectTitle": "Sistem Manajemen Proyek",
+                "bullets": [
+                  "Mengembangkan aplikasi web menggunakan Spring Boot dan React.",
+                  "Berkolaborasi dengan tim desain untuk meningkatkan pengalaman pengguna.",
+                  "Menerapkan pengujian otomatis untuk meningkatkan kualitas perangkat lunak."
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "company": "PT. Solusi Digital",
+        "location": "Bandung, Indonesia",
+        "summary": "Perusahaan yang fokus pada solusi digital dan aplikasi mobile.",
+        "skills": "Android Development, Firebase",
+        "positions": [
+          {
+            "title": "Junior Mobile Developer",
+            "duration": "Juli 2018 - Desember 2019",
+            "details": [
+              {
+                "projectTitle": "Aplikasi Mobile E-Commerce",
+                "bullets": [
+                  "Berkontribusi dalam pengembangan aplikasi Android menggunakan Kotlin.",
+                  "Mengintegrasikan API untuk sistem pembayaran.",
+                  "Melakukan debugging dan pengujian aplikasi."
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "education": [
+      {
+        "school": "Universitas Indonesia",
+        "degree": "Sarjana Teknik Informatika",
+        "duration": "2014 - 2018"
+      }
+    ],
+    "certifications": [
+      "Certified Java Programmer (2020)",
+      "AWS Certified Solutions Architect (2021)"
+    ]
+  }
+]
+
+
 // Main component
 export default function Home() {
   const [data, setData] = useState<JsonData | null>(null);
   const handleDataReceived = (receivedData: DataType) => {
     setData(receivedData);
   };
+
+  useEffect(() => {
+    setData(template[0]);
+  }, []);
 
 
   return (
