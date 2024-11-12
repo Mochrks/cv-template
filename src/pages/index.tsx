@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography, } from '@mui/material';
 import UploadFile from '@/components/UploadFile';
 import Header from '@/components/Header';
@@ -364,6 +364,91 @@ const EducationAndCertification = ({ data }: { data: DataType }) => (
   </Stack>
 );
 
+
+
+// template
+const template = [
+  {
+    "employee": {
+      "name": "John Doe",
+      "position": "Software Engineer",
+      "email": "johndoe@example.com",
+      "phone": "+123456789",
+      "image": "https://example.com/image.jpg",
+      "biodata": {
+        "profile": "Experienced software engineer with a passion for developing innovative programs.",
+        "objective": "To leverage my skills in software development and contribute to impactful projects.",
+        "placeOfBirth": "New York, USA",
+        "dateOfBirth": "1990-05-15",
+        "gender": "Male"
+      }
+    },
+    "histories": {
+      "employment": [
+        {
+          "employer": "Tech Solutions Inc.",
+          "position": "Junior Software Developer",
+          "from": "2015",
+          "to": "2017"
+        },
+        {
+          "employer": "Innovatech LLC",
+          "position": "Software Engineer",
+          "from": "2017",
+          "to": "Present"
+        }
+      ],
+      "certification": [
+        {
+          "title": "Certified Java Developer",
+          "provider": "Oracle",
+          "date": "2016-08-01",
+          "duration": "6 months",
+          "certificate": "Yes"
+        },
+        {
+          "title": "AWS Certified Solutions Architect",
+          "provider": "Amazon",
+          "date": "2021-03-15",
+          "duration": "1 year",
+          "certificate": "Yes"
+        }
+      ],
+      "education": [
+        {
+          "school": "University of Technology",
+          "degree": "Bachelor of Science",
+          "subject": "Computer Science",
+          "from": "2011",
+          "to": "2015",
+          "GPA": "3.8"
+        }
+      ],
+      "project": [
+        {
+          "projectName": "E-commerce Platform",
+          "role": "Lead Developer",
+          "from": "2020-01-01",
+          "to": "2021-12-31",
+          "customer": "Retail Corp.",
+          "projectDescription": "Developed a full-featured e-commerce platform for online shopping.",
+          "technicalInformation": "Java, Spring Boot, React, MySQL",
+          "jobDescription": "Responsible for backend development and database management."
+        },
+        {
+          "projectName": "Mobile Banking App",
+          "role": "Backend Developer",
+          "from": "2022-01-01",
+          "to": "Present",
+          "customer": "Finance Inc.",
+          "projectDescription": "Creating a secure mobile banking application.",
+          "technicalInformation": "Node.js, Express, MongoDB",
+          "jobDescription": "Handling API development and integration with third-party services."
+        }
+      ]
+    }
+  }
+]
 // Main Page Component
 export default function Home() {
   const [data, setData] = useState<DataType | null>(null);
@@ -372,8 +457,15 @@ export default function Home() {
     setData(receivedData);
   };
 
+  useEffect(() => {
+    setData(template[0]);
+  }, []);
+
   return (
     <Box>
+      <Box className="no-print">
+        <InfoComponent />
+      </Box>
       {/* header */}
       <Header />
 
@@ -432,13 +524,8 @@ export default function Home() {
         </Box>
       </Box>
 
-
       {/* footer */}
       <Footer />
-
-      <Box className="no-print">
-        <InfoComponent />
-      </Box>
     </Box>
   );
 };
