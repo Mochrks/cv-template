@@ -211,7 +211,7 @@ const ListUpload = () => {
                 </Fab>
             </Tooltip>
 
-            {/* Dialog for displaying uploaded files */}
+            {/* Dialog uploaded files */}
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ backgroundColor: '#1976d2', color: 'white' }}>
                     <Typography variant="h6">Uploaded Files</Typography>

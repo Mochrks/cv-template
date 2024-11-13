@@ -56,7 +56,7 @@ const InfoComponent = () => {
                 </Tooltip> */}
             </Box>
 
-            {/* CSS untuk pengaturan cetak */}
+            {/* CSS print */}
             <style>
                 {`
                     @media print {

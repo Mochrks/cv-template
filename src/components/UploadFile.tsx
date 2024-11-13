@@ -172,7 +172,7 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
         try {
             console.log('Uploading PDF for processing...');
 
-            // Konversi base64 
+            // decode base64 
             const response = await fetch(files.content);
             const blob = await response.blob();
             const file = new File([blob], files.name, { type: 'application/pdf' });
@@ -220,10 +220,10 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
             const runThreadData = await runThreadResponse.json();
             console.log('Thread run initiated:', runThreadData);
 
-            // Polling untuk mendapatkan status thread
+            // get state thread
             let threadStatus = runThreadData.status;
             while (threadStatus !== 'completed') {
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Tunggu 2 detik antara setiap polling
+                await new Promise(resolve => setTimeout(resolve, 2000));
 
                 const statusResponse = await fetch(`/api/uploadFileAssistant?action=checkRunStatus&threadId=${threadId}&runId=${runThreadData.id}`, {
                     method: 'GET',
@@ -253,7 +253,7 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
             const processedData = await getMessagesResponse.json();
             console.log('Processed CV Data:', processedData);
 
-            // Kirim data ke parent component
+            // received data
             onDataReceived(processedData);
 
         } catch (error) {
