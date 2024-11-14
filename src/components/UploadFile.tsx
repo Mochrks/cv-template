@@ -17,6 +17,7 @@ interface FileItem {
     name: string;
     content: string;
     size: number;
+    type: string;
 }
 
 // Styled components
@@ -81,9 +82,18 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
         }
     };
 
+
     const processFile = async (file: File) => {
-        if (file.type !== 'application/pdf') {
-            alert('Please upload a PDF file');
+        // allowed file types
+        const allowedTypes = [
+            'application/pdf',
+            'image/png',
+            'image/jpeg',
+            'image/jpg'
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please upload a PDF, PNG, or JPG file');
             return;
         }
 
@@ -92,13 +102,12 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
             setFiles({
                 name: file.name,
                 content: e.target?.result as string,
-                size: file.size
+                size: file.size,
+                type: file.type
             });
         };
         reader.readAsDataURL(file);
     };
-
-
 
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return '0 Bytes';
@@ -116,52 +125,87 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
 
         setIsLoading(true);
         try {
+            // Conditional processing based on file pdf type
+            if (files.type === 'application/pdf') {
+                console.log('Sending PDF for processing...');
+                const processResponse = await fetch('/api/process-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fileContent: files.content
+                    }),
+                });
 
-            console.log('Sending PDF for processing...');
-            const processResponse = await fetch('/api/process-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    fileContent: files.content
-                }),
-            });
+                if (!processResponse.ok) {
+                    throw new Error(`Failed to process PDF: ${processResponse.statusText}`);
+                }
 
-            if (!processResponse.ok) {
-                throw new Error(`Failed to process PDF: ${processResponse.statusText}`);
+                const { text } = await processResponse.json();
+                console.log(text);
+
+                console.log('Generating JSON...');
+                const jsonResponse = await fetch('/api/generate-json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
+
+                if (!jsonResponse.ok) {
+                    throw new Error(`Failed to generate JSON: ${jsonResponse.statusText}`);
+                }
+
+                const result = await jsonResponse.json();
+                onDataReceived(result);
+                console.log(result);
+
+            } else if (['image/png', 'image/jpeg', 'image/jpg'].includes(files.type)) {
+                // Processing ocrr images
+                console.log('Processing image for OCR...');
+                const ocrResponse = await fetch('/api/process-images', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fileContent: files.content
+                    }),
+                });
+
+                if (!ocrResponse.ok) {
+                    throw new Error(`Failed to process image: ${ocrResponse.statusText}`);
+                }
+
+                const ocrResult = await ocrResponse.json();
+                console.log('OCR Result:', ocrResult.text);
+
+                // next step generate to json
+                console.log('Generating JSON...');
+                const jsonResponse = await fetch('/api/generate-json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: ocrResult.text }),
+                });
+
+                if (!jsonResponse.ok) {
+                    throw new Error(`Failed to generate JSON: ${jsonResponse.statusText}`);
+                }
+
+                const result = await jsonResponse.json();
+                onDataReceived(result);
+                console.log(result);
             }
-
-            const { text } = await processResponse.json();
-            console.log(text);
-            console.log('PDF processed successfully');
-
-            console.log('Generating JSON...');
-            const jsonResponse = await fetch('/api/generate-json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text }),
-            });
-
-            if (!jsonResponse.ok) {
-                throw new Error(`Failed to generate JSON: ${jsonResponse.statusText}`);
-            }
-
-            const result = await jsonResponse.json();
-            // setOutput(JSON.stringify(result, null, 2));
-            onDataReceived(result);
-            console.log(result);
-            console.log('JSON generated successfully');
         } catch (error) {
             console.error('Error:', error);
-            // setOutput(`Error processing file: ${error}`);
         } finally {
             setIsLoading(false);
         }
     };
-
 
     return (
         <Container maxWidth="lg">
@@ -184,7 +228,7 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
                     <input
                         ref={fileInputRef}
                         type="file"
-                        accept=".pdf"
+                        accept=".pdf, .png, .jpg, .jpeg"
                         onChange={(e) => handleFileUpload(e.target.files)}
                         style={{ display: 'none' }}
                     />
