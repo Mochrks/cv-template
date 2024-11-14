@@ -531,9 +531,9 @@ export default function Home() {
     setData(receivedData);
   };
 
-  // useEffect(() => {
-  //   setData(template[0]);
-  // }, []);
+  useEffect(() => {
+    setData(template[0]);
+  }, []);
 
   return (
     <Box>
