@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography, } from '@mui/material';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Avatar, Box, Button, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography, } from '@mui/material';
 import UploadFile from '@/components/UploadFile';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import InfoComponent from '@/components/InfoComponent';
-
+import Print from '@/components/Print';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 // Interfaces for data types
 interface Project {
   projectName: string;
@@ -62,23 +63,96 @@ interface DataType {
 }
 
 // Personal Info Section Component
-const PersonalInfoSection = ({ data }: { data: DataType }) => (
-  <Stack direction="row" alignItems="center">
-    <Box sx={{ flexGrow: 1 }}>
-      <Typography variant="h5" sx={{ py: 1 }}>
-        <strong>{data?.employee.name || 'No Name'}</strong>
-      </Typography>
-      <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
-      <Typography variant="subtitle1">{data?.employee.position || 'No Position'}</Typography>
-      <Typography variant="subtitle2">{data?.employee.email || 'No Email'}</Typography>
-    </Box>
-    <Box>
-      <Avatar src={data?.employee.image || ''} sx={{ height: 150, width: 150 }}>
-        {data?.employee.image ? 'Talent Image' : 'No Image'}
-      </Avatar>
-    </Box>
-  </Stack>
-);
+const PersonalInfoSection = ({ data }: { data: DataType }) => {
+  const [avatarImage, setAvatarImage] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    const savedImage = localStorage.getItem('employeeAvatar');
+    if (savedImage) {
+      setAvatarImage(savedImage);
+    }
+  }, []);
+
+
+  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Image = reader.result as string;
+        setAvatarImage(base64Image);
+        // Set  localStorage
+        localStorage.setItem('employeeAvatar', base64Image);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
+  const handleRemoveImage = () => {
+    setAvatarImage(null);
+    localStorage.removeItem('employeeAvatar');
+  };
+
+  return (
+    <Stack direction="row" alignItems="center">
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="h5" sx={{ py: 1 }}>
+          <strong>{data?.employee.name || 'No Name'}</strong>
+        </Typography>
+        <Divider sx={{ borderBottomWidth: 2, borderColor: '#000000', marginTop: 1 }} />
+        <Typography variant="subtitle1">{data?.employee.position || 'No Position'}</Typography>
+        <Typography variant="subtitle2">{data?.employee.email || 'No Email'}</Typography>
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Avatar
+          src={avatarImage || data?.employee.image || ''}
+          sx={{ height: 150, width: 150, mb: 1 }}
+        >
+          {avatarImage || data?.employee.image ? 'Talent Image' : 'No Image'}
+        </Avatar>
+
+        {/* Input file */}
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="avatar-upload"
+          onChange={handleImageUpload}
+        />
+
+        <Box sx={{ display: 'flex', gap: 1, marginY: 1 }} className="no-print">
+          {/* upload */}
+          <label htmlFor="avatar-upload">
+            <Button
+              variant="contained"
+              component="span"
+              size="small"
+              color="primary"
+              startIcon={<FileUploadIcon />}
+            >
+              Upload
+            </Button>
+          </label>
+
+          {/* delete */}
+          {(avatarImage || data?.employee.image) && (
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleRemoveImage}
+              color="error"
+
+            >
+              <DeleteIcon />
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </Stack>
+  );
+};
 
 // Employment Section Component
 const EmploymentSection = ({ employment }: { employment: DataType['histories']['employment'] }) => (
@@ -464,7 +538,7 @@ export default function Home() {
   return (
     <Box>
       <Box className="no-print">
-        <InfoComponent />
+        <Print />
       </Box>
       {/* header */}
       <Header />
