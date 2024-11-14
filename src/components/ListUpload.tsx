@@ -36,7 +36,7 @@ const ListUpload = () => {
     useEffect(() => {
         const fetchFiles = async () => {
             try {
-                const response = await axios.get('/api/listUpload');
+                const response = await axios.get('/api/list-upload');
                 setFiles(response.data.data);
             } catch (error) {
                 setError(error.message);
@@ -68,7 +68,7 @@ const ListUpload = () => {
 
     const handleDeleteFile = async (fileId: string) => {
         try {
-            await axios.delete(`/api/listUpload?fileId=${fileId}`);
+            await axios.delete(`/api/list-upload?fileId=${fileId}`);
             setFiles(files.filter(file => file.id !== fileId));
             handleNotification('File deleted successfully!', 'success');
         } catch (error) {

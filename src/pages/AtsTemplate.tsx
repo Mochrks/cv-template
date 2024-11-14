@@ -3,11 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import UploadFile from "@/components/UploadFile";
-import InfoComponent from "@/components/InfoComponent";
+import Print from "@/components/Print";
 import ListUpload from "@/components/ListUpload";
 
 interface DataType {
-
     certifications: string[];
     education: Education[];
     employee: Employee;
@@ -354,7 +353,7 @@ export default function AtsTemplate() {
             )}
 
             <Box className="no-print">
-                <InfoComponent />
+                <Print />
                 <ListUpload />
             </Box>
 

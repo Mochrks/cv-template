@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { CV_STRUCTURE_INSTRUCTIONS } from '@/utils/cvStructure';
+import { AUTH_HEADER, OPENAI_API_URL } from '@/utils/axiosConfig';
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -9,7 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const { text } = req.body;
 
-        const response = await axios.post("https://api.openai.com/v1/chat/completions", {
+        const response = await axios.post(`${OPENAI_API_URL}/chat/completions`,
+        {
             model: "gpt-4o-mini",
             messages: [
                 {
@@ -23,11 +26,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ],
             temperature: 0.7,
             max_tokens: 2000
-        }, {
+        }, 
+        {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-            },
+                ...AUTH_HEADER,
+        },
         });
 
 

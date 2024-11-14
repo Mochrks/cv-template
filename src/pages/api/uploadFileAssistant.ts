@@ -3,16 +3,7 @@ import axios from 'axios';
 import { CV_STRUCTURE_INSTRUCTIONS } from '@/utils/cvStructureAssistant';
 import multer from 'multer';
 import FormData from 'form-data';
-
-
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-if (!OPENAI_API_KEY) {
-  throw new Error("Missing OPENAI_API_KEY in environment variables");
-}
-const OPENAI_API_URL = process.env.API_URL;
-const AUTH_HEADER = { Authorization: `Bearer ${OPENAI_API_KEY}` };
-const ASSISTANT_ID =  process.env.ASSISTANT_ID; 
-
+import { ASSISTANT_ID, AUTH_HEADER, OPENAI_API_URL } from '@/utils/axiosConfig';
 
 const upload = multer({ storage: multer.memoryStorage() }); 
 

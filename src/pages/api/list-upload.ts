@@ -1,13 +1,6 @@
-// src/pages/api/ListUpload.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-if (!OPENAI_API_KEY) {
-    throw new Error("Missing OPENAI_API_KEY in environment variables");
-}
-const OPENAI_API_URL = process.env.API_URL;
-const AUTH_HEADER = { Authorization: `Bearer ${OPENAI_API_KEY}` };
+import { AUTH_HEADER, OPENAI_API_URL } from '@/utils/axiosConfig';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
