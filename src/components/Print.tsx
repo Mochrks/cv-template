@@ -7,7 +7,7 @@ import {
 import PrintIcon from '@mui/icons-material/Print';
 // import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
-const InfoComponent = () => {
+const Print = () => {
 
     const handlePrintDocument = () => {
         window.print();
@@ -71,4 +71,4 @@ const InfoComponent = () => {
     );
 };
 
-export default InfoComponent;
+export default Print;

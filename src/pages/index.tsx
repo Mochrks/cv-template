@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import UploadFile from "@/components/UploadFile";
-import InfoComponent from "@/components/InfoComponent";
+import Print from "@/components/Print";
 
 interface DataType {
 
@@ -353,7 +353,7 @@ export default function Home() {
       )}
 
       <Box className="no-print">
-        <InfoComponent />
+        <Print />
       </Box>
     </Box>
   );
