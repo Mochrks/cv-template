@@ -107,61 +107,6 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
 
 
     // old template default
-    // const extractToJson = async () => {
-    //     if (!files) {
-    //         console.error('No file to upload');
-    //         return;
-    //     }
-
-    //     setIsLoading(true);
-    //     try {
-
-    //         console.log('Sending PDF for processing...');
-    //         const processResponse = await fetch('/api/process-pdf', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 fileContent: files.content
-    //             }),
-    //         });
-
-    //         if (!processResponse.ok) {
-    //             throw new Error(`Failed to process PDF: ${processResponse.statusText}`);
-    //         }
-
-    //         const { text } = await processResponse.json();
-    //         console.log(text);
-    //         console.log('PDF processed successfully');
-
-    //         console.log('Generating JSON...');
-    //         const jsonResponse = await fetch('/api/generate-json', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({ text }),
-    //         });
-
-    //         if (!jsonResponse.ok) {
-    //             throw new Error(`Failed to generate JSON: ${jsonResponse.statusText}`);
-    //         }
-
-    //         const result = await jsonResponse.json();
-    //         // setOutput(JSON.stringify(result, null, 2));
-    //         onDataReceived(result);
-    //         console.log(result);
-    //         console.log('JSON generated successfully');
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         // setOutput(`Error processing file: ${error}`);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
-
-
     const extractToJson = async () => {
         if (!files) {
             console.error('No file to upload');
@@ -170,98 +115,154 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
 
         setIsLoading(true);
         try {
-            console.log('Uploading PDF for processing...');
 
-            // decode base64 
-            const response = await fetch(files.content);
-            const blob = await response.blob();
-            const file = new File([blob], files.name, { type: 'application/pdf' });
-            const formData = new FormData();
-            formData.append('file', file);
-
-            // Upload File
-            const uploadResponse = await fetch('/api/uploadFileAssistant?action=uploadFile', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!uploadResponse.ok) {
-                throw new Error(`Failed to upload file: ${uploadResponse.statusText}`);
-            }
-
-            const { fileUploadId } = await uploadResponse.json();
-            console.log('File uploaded successfully:', fileUploadId);
-
-            // Create Thread
-            const createThreadResponse = await fetch('/api/uploadFileAssistant?action=createThread', {
+            console.log('Sending PDF for processing...');
+            const processResponse = await fetch('/api/process-pdf', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ fileUploadId }),
+                body: JSON.stringify({
+                    fileContent: files.content
+                }),
             });
 
-            if (!createThreadResponse.ok) {
-                throw new Error(`Failed to create thread: ${createThreadResponse.statusText}`);
+            if (!processResponse.ok) {
+                throw new Error(`Failed to process PDF: ${processResponse.statusText}`);
             }
 
-            const { threadId } = await createThreadResponse.json();
-            console.log('Thread created successfully:', threadId);
+            const { text } = await processResponse.json();
+            console.log(text);
+            console.log('PDF processed successfully');
 
-            // Run Thread
-            const runThreadResponse = await fetch(`/api/uploadFileAssistant?action=runThread&threadId=${threadId}`, {
+            console.log('Generating JSON...');
+            const jsonResponse = await fetch('/api/generate-json', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text }),
             });
 
-            if (!runThreadResponse.ok) {
-                throw new Error(`Failed to run thread: ${runThreadResponse.statusText}`);
+            if (!jsonResponse.ok) {
+                throw new Error(`Failed to generate JSON: ${jsonResponse.statusText}`);
             }
 
-            const runThreadData = await runThreadResponse.json();
-            console.log('Thread run initiated:', runThreadData);
-
-            // get state thread
-            let threadStatus = runThreadData.status;
-            while (threadStatus !== 'completed') {
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                const statusResponse = await fetch(`/api/uploadFileAssistant?action=checkRunStatus&threadId=${threadId}&runId=${runThreadData.id}`, {
-                    method: 'GET',
-                });
-
-                if (!statusResponse.ok) {
-                    throw new Error(`Failed to check thread status: ${statusResponse.statusText}`);
-                }
-
-                const statusData = await statusResponse.json();
-                threadStatus = statusData.status;
-
-                if (threadStatus === 'failed') {
-                    throw new Error('Thread processing failed');
-                }
-            }
-
-            // Get Thread Messages
-            const getMessagesResponse = await fetch(`/api/uploadFileAssistant?action=getThreadMessages&threadId=${threadId}`, {
-                method: 'GET',
-            });
-
-            if (!getMessagesResponse.ok) {
-                throw new Error(`Failed to get thread messages: ${getMessagesResponse.statusText}`);
-            }
-
-            const processedData = await getMessagesResponse.json();
-            console.log('Processed CV Data:', processedData);
-
-            // received data
-            onDataReceived(processedData);
-
+            const result = await jsonResponse.json();
+            // setOutput(JSON.stringify(result, null, 2));
+            onDataReceived(result);
+            console.log(result);
+            console.log('JSON generated successfully');
         } catch (error) {
             console.error('Error:', error);
+            // setOutput(`Error processing file: ${error}`);
         } finally {
             setIsLoading(false);
         }
     };
+
+
+    // function new
+    // const extractToJson = async () => {
+    //     if (!files) {
+    //         console.error('No file to upload');
+    //         return;
+    //     }
+
+    //     setIsLoading(true);
+    //     try {
+    //         console.log('Uploading PDF for processing...');
+
+    //         // decode base64 
+    //         const response = await fetch(files.content);
+    //         const blob = await response.blob();
+    //         const file = new File([blob], files.name, { type: 'application/pdf' });
+    //         const formData = new FormData();
+    //         formData.append('file', file);
+
+    //         // Upload File
+    //         const uploadResponse = await fetch('/api/uploadFileAssistant?action=uploadFile', {
+    //             method: 'POST',
+    //             body: formData,
+    //         });
+
+    //         if (!uploadResponse.ok) {
+    //             throw new Error(`Failed to upload file: ${uploadResponse.statusText}`);
+    //         }
+
+    //         const { fileUploadId } = await uploadResponse.json();
+    //         console.log('File uploaded successfully:', fileUploadId);
+
+    //         // Create Thread
+    //         const createThreadResponse = await fetch('/api/uploadFileAssistant?action=createThread', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ fileUploadId }),
+    //         });
+
+    //         if (!createThreadResponse.ok) {
+    //             throw new Error(`Failed to create thread: ${createThreadResponse.statusText}`);
+    //         }
+
+    //         const { threadId } = await createThreadResponse.json();
+    //         console.log('Thread created successfully:', threadId);
+
+    //         // Run Thread
+    //         const runThreadResponse = await fetch(`/api/uploadFileAssistant?action=runThread&threadId=${threadId}`, {
+    //             method: 'POST',
+    //         });
+
+    //         if (!runThreadResponse.ok) {
+    //             throw new Error(`Failed to run thread: ${runThreadResponse.statusText}`);
+    //         }
+
+    //         const runThreadData = await runThreadResponse.json();
+    //         console.log('Thread run initiated:', runThreadData);
+
+    //         // get state thread
+    //         let threadStatus = runThreadData.status;
+    //         while (threadStatus !== 'completed') {
+    //             await new Promise(resolve => setTimeout(resolve, 2000));
+
+    //             const statusResponse = await fetch(`/api/uploadFileAssistant?action=checkRunStatus&threadId=${threadId}&runId=${runThreadData.id}`, {
+    //                 method: 'GET',
+    //             });
+
+    //             if (!statusResponse.ok) {
+    //                 throw new Error(`Failed to check thread status: ${statusResponse.statusText}`);
+    //             }
+
+    //             const statusData = await statusResponse.json();
+    //             threadStatus = statusData.status;
+
+    //             if (threadStatus === 'failed') {
+    //                 throw new Error('Thread processing failed');
+    //             }
+    //         }
+
+    //         // Get Thread Messages
+    //         const getMessagesResponse = await fetch(`/api/uploadFileAssistant?action=getThreadMessages&threadId=${threadId}`, {
+    //             method: 'GET',
+    //         });
+
+    //         if (!getMessagesResponse.ok) {
+    //             throw new Error(`Failed to get thread messages: ${getMessagesResponse.statusText}`);
+    //         }
+
+    //         const processedData = await getMessagesResponse.json();
+    //         console.log('Processed CV Data:', processedData);
+
+    //         // received data
+    //         onDataReceived(processedData);
+
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
 
 
     return (

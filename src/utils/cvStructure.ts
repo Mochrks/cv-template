@@ -63,7 +63,7 @@ ${CV_STRUCTURE}
 Ensure all data is properly categorized and formatted according to this structure.
 If any information is not available in the CV, use "-" for string values 
 and empty arrays [] for array values. For date fields, use "YYYY" format for years 
-and "YYYY-MM-DD" for full dates. If a date is ongoing or current, use "Present".
+and "DD-MM-YYYY" for full dates. If a date is ongoing or current, use "Present".
 For the "gender" field, use either "Male", "Female", or "-".
 For the "certificate" field in certifications, use either "Yes", "No", or "-".
 The "GPA" field in education is optional; if -, use "-".

@@ -19,6 +19,7 @@ const RootContainer = styled(Box)(({ theme }) => ({
     height: '100vh',
     display: 'flex',
     alignItems: 'center',
+    backgroundColor: theme.palette.background.default,
 }));
 
 const OptionPaper = styled(Paper)(({ theme }) => ({
@@ -43,7 +44,7 @@ const LandingPage: React.FC = () => {
 
     const handleOptionSelect = (option: string) => {
         setSelectedOption(option);
-        //  add logic here
+
     };
 
     return (
@@ -99,12 +100,15 @@ const LandingPage: React.FC = () => {
                             >
                                 P79 Template
                             </Typography>
-                            <Link href="/P79Template" style={{ textDecoration: 'none' }}>
+                            <Link href="/p79-template" style={{ textDecoration: 'none' }}>
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     sx={{
                                         mt: 3,
+                                        '&:hover': {
+                                            backgroundColor: selectedOption === 'p79' ? 'white' : theme.palette.primary.main,
+                                        },
                                         backgroundColor: selectedOption === 'p79'
                                             ? 'white'
                                             : undefined,
@@ -161,12 +165,15 @@ const LandingPage: React.FC = () => {
                             >
                                 ATS Template
                             </Typography>
-                            <Link href="/AtsTemplate" style={{ textDecoration: 'none' }}>
+                            <Link href="/ats-template" style={{ textDecoration: 'none' }}>
                                 <Button
                                     variant="contained"
                                     color="secondary"
                                     sx={{
                                         mt: 3,
+                                        '&:hover': {
+                                            backgroundColor: selectedOption === 'ats' ? 'white' : '',
+                                        },
                                         backgroundColor: selectedOption === 'ats'
                                             ? 'white'
                                             : undefined,

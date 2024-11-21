@@ -20,8 +20,14 @@ import {
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+
+interface File {
+    id: string;
+    filename: string;
+    // Add other properties as needed
+}
 const ListUpload = () => {
-    const [files, setFiles] = useState<any[]>([]);
+    const [files, setFiles] = useState<File[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
     const [page, setPage] = useState(1);

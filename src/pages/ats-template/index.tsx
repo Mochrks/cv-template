@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import UploadFile from "@/components/UploadFile";
 import Print from "@/components/Print";
 import ListUpload from "@/components/ListUpload";
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface DataType {
     certifications: string[];
@@ -305,6 +308,9 @@ const template = [
 // Main component
 export default function AtsTemplate() {
     const [data, setData] = useState<JsonData | null>(null);
+    const [isEdit, setEdit] = useState<boolean>(false);
+    const [editedData, setEditedData] = useState<JsonData | null>(null);
+
     const handleDataReceived = (receivedData: DataType) => {
         setData(receivedData);
     };
@@ -313,29 +319,116 @@ export default function AtsTemplate() {
         setData(template[0]);
     }, []);
 
+    const handleEditToggle = () => {
+        if (isEdit) {
+            setData(editedData);
+        } else {
+            setEditedData(data);
+        }
+        setEdit(!isEdit);
+    };
+
+    const handleInputChange = (field: string, value: string) => {
+        if (editedData) {
+            setEditedData({
+                ...editedData,
+                employee: {
+                    ...editedData.employee,
+                    [field]: value
+                }
+            });
+        }
+    };
 
     return (
         <Box sx={{ padding: "30px", fontFamily: "Arial, sans-serif", backgroundColor: "#ffffff", lineHeight: 1.5 }} className="page">
-            {/*Upload files */}
             <Box sx={{ marginBottom: "20px" }} className="no-print">
-                {/* upload files */}
                 <UploadFile onDataReceived={handleDataReceived} />
             </Box>
 
-            {/* Conditional for data */}
+
+            <Box sx={{ p: 1, my: 5, width: '100%', backgroundColor: '#E5E5E5' }} className="no-print">
+                <Typography variant="h6" >Result</Typography>
+            </Box>
+
             {data && (
                 <>
-                    {/* Header Section */}
+                    <Box className="no-print" sx={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px", gap: "10px" }}>
+                        <Button
+                            variant="contained"
+                            component="span"
+                            size="small"
+                            color="primary"
+                            startIcon={isEdit ? <ClearIcon /> : <EditIcon />}
+                            onClick={handleEditToggle}
+                        >
+                            {isEdit ? "Cancel " : "Edit"}
+                        </Button>
+                        {isEdit && (
+                            <Button
+                                variant="contained"
+                                component="span"
+                                size="small"
+                                color="success"
+                                startIcon={<SaveIcon />}
+                                onClick={handleEditToggle}
+                            >
+                                Save
+                            </Button>
+                        )}
+                    </Box>
                     <Box sx={{ textAlign: "center", marginBottom: "10px" }}>
-                        <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "18px", letterSpacing: "1.2px" }}>
-                            {data.employee.name}
-                        </Typography>
-                        <Typography variant="h6" sx={{ fontSize: "14px", fontWeight: "bold" }}>
-                            {data.employee.position}
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontSize: "11px" }}>
-                            {data.employee.email} • {data.employee.phone} • {data.employee.linkedin}
-                        </Typography>
+                        {isEdit ? (
+                            <>
+                                <TextField
+                                    variant="outlined"
+                                    value={editedData.employee.name}
+                                    onChange={(e) => handleInputChange("name", e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    value={editedData.employee.position}
+                                    onChange={(e) => handleInputChange("position", e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    value={editedData.employee.email}
+                                    onChange={(e) => handleInputChange("email", e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    value={editedData.employee.phone}
+                                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    value={editedData.employee.linkedin}
+                                    onChange={(e) => handleInputChange("linkedin", e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "18px", letterSpacing: "1.2px" }}>
+                                    {data.employee.name}
+                                </Typography>
+                                <Typography variant="h6" sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                                    {data.employee.position}
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: "11px" }}>
+                                    {data.employee.email} • {data.employee.phone} • {data.employee.linkedin}
+                                </Typography>
+                            </>
+                        )}
                     </Box>
 
                     {/* Skills Section */}
@@ -353,10 +446,9 @@ export default function AtsTemplate() {
             )}
 
             <Box className="no-print">
-                <Print />
                 <ListUpload />
+                <Print />
             </Box>
-
         </Box>
     );
 };

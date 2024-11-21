@@ -8,8 +8,7 @@ import Footer from '@/components/Footer';
 import Print from '@/components/Print';
 import ListUpload from '@/components/ListUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 // Interfaces for data types
 interface Project {
@@ -133,9 +132,9 @@ const PersonalInfoSection = ({ data }: { data: DataType }) => {
                             component="span"
                             size="small"
                             color="primary"
-                            startIcon={<FileUploadIcon />}
+                            startIcon={<AddAPhotoIcon />}
                         >
-                            Upload
+                            Photo
                         </Button>
                     </label>
 
@@ -157,10 +156,9 @@ const PersonalInfoSection = ({ data }: { data: DataType }) => {
     );
 };
 
-
 // Employment Section Component
 const EmploymentSection = ({ employment }: { employment: DataType['histories']['employment'] }) => (
-    <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
+    <Stack direction="column" spacing={1} sx={{ flexBasis: '54%' }}>
         <Typography variant="body1" sx={{ pt: 1 }}>
             <strong>Employment</strong>
         </Typography>
@@ -203,7 +201,7 @@ const EmploymentSection = ({ employment }: { employment: DataType['histories']['
 
 // Objective Section Component
 const ObjectiveSection = ({ biodata }: { biodata: DataType['employee']['biodata'] }) => (
-    <Stack direction="column" spacing={1} sx={{ flexBasis: '57%' }}>
+    <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
         <Typography variant="body1" sx={{ pt: 1 }}>
             <strong>Objective</strong>
         </Typography>
@@ -399,7 +397,7 @@ const EducationAndCertification = ({ data }: { data: DataType }) => (
             </Table>
         </Stack>
         <Divider orientation="vertical" flexItem sx={{ borderColor: '#000000', borderWidth: 1 }} />
-        <Stack direction="column" spacing={1} sx={{ flexBasis: '58%' }}>
+        <Stack direction="column" spacing={1} sx={{ flexBasis: '50%' }}>
             <Typography variant="body1" sx={{ pt: 1 }}>
                 <strong>Education</strong>
             </Typography>
@@ -567,6 +565,10 @@ export default function P79Template() {
                                 <UploadFile onDataReceived={handleDataReceived} />
                             </Box>
 
+                            <Box sx={{ p: 1, my: 5, width: '100%', backgroundColor: '#E5E5E5' }} className="no-print">
+                                <Typography variant="h6" >Result</Typography>
+                            </Box>
+
 
                             {/* CV Output Area */}
                             {data && (
@@ -604,8 +606,8 @@ export default function P79Template() {
             <Footer />
 
             <Box className="no-print">
-                <Print />
                 <ListUpload />
+                <Print />
             </Box>
 
         </Box>
