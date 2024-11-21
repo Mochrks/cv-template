@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 
 interface FileItem {
     name: string;
@@ -290,6 +291,9 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
                         onChange={(e) => handleFileUpload(e.target.files)}
                         style={{ display: 'none' }}
                     />
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CloudUploadOutlinedIcon style={{ fontSize: '60px', color: '#BDBDBD' }} />
+                    </Box>
                     <Typography>
                         Drag and drop your PDF file here or click to select file
                     </Typography>
