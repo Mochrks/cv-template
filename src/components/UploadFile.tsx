@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Box,
     Typography,
@@ -53,6 +53,12 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
     const [isLoading, setIsLoading] = useState(false);
     // const [output, setOutput] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [template, setTemplate] = useState('');
+
+
+    useEffect(() => {
+        setTemplate(localStorage.getItem('template') || '');
+    }, []);
 
     const handleDrag = (e: React.DragEvent) => {
         e.preventDefault();
@@ -142,7 +148,7 @@ export default function UploadFile({ onDataReceived }: UploadFileProps) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ text }),
+                body: JSON.stringify({ text, template }),
             });
 
             if (!jsonResponse.ok) {

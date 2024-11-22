@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Container,
@@ -42,9 +42,18 @@ const LandingPage: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
+
+    useEffect(() => {
+        localStorage.setItem('template', 'template1');
+    }, []);
+
     const handleOptionSelect = (option: string) => {
         setSelectedOption(option);
-
+        if (option === 'p79') {
+            localStorage.setItem('template', 'template1');
+        } else if (option === 'ats') {
+            localStorage.setItem('template', 'template2');
+        }
     };
 
     return (

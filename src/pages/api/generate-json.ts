@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import { CV_STRUCTURE_INSTRUCTIONS } from '@/utils/cvStructure';
+import { CV_STRUCTURE_INSTRUCTIONS_ONE } from '@/utils/cvStructure';
+import { CV_STRUCTURE_INSTRUCTIONS_TWO } from '@/utils/cvStructureTwo';
 import { AUTH_HEADER, OPENAI_API_URL } from '@/utils/axiosConfig';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,7 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const { text } = req.body;
+        const { text,template } = req.body;
+        const instructions = template === 'template2' ? CV_STRUCTURE_INSTRUCTIONS_TWO : CV_STRUCTURE_INSTRUCTIONS_ONE;
 
         const response = await axios.post(`${OPENAI_API_URL}/chat/completions`,
         {
@@ -17,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             messages: [
                 {
                     role: "system",
-                    content: CV_STRUCTURE_INSTRUCTIONS
+                    content: instructions,
                 },
                 {
                     role: "user",
