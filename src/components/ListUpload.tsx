@@ -41,8 +41,8 @@ const ListUpload = () => {
     useEffect(() => {
         const fetchFiles = async () => {
             try {
-                const response = await axios.get('/api/list-upload');
-                setFiles(response.data.data);
+                const response = (await axios.get<{ data: File[] }>('/api/list-upload')).data;
+                setFiles(response.data);
             } catch (error) {
                 setError(error.message);
             }
@@ -98,7 +98,7 @@ const ListUpload = () => {
         const paginationItems = [];
         const maxVisiblePages = 5; // Maximum number of visible page numbers
         let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
         if (endPage - startPage < maxVisiblePages - 1) {
             startPage = Math.max(1, endPage - (maxVisiblePages - 1));

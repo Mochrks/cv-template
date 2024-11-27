@@ -13,6 +13,15 @@ export const config = {
   },
 };
 
+interface MessageContent {
+  type: string;
+}
+
+interface Message {
+  role: 'assistant' | 'user';
+  content: MessageContent[];
+}
+
 const uploadFile = async (req: NextApiRequest, res: NextApiResponse) => {
   //  middleware multer
   upload.single('file')(req, res, async (err) => {
@@ -140,7 +149,7 @@ async function getThreadMessages(req: NextApiRequest, res: NextApiResponse) {
     //  res.status(200).json(messages);
     // Cari pesan dari assistant dengan tipe text
     const assistantMessage = messages.find(
-      (msg: any) => msg.role === 'assistant' && msg.content[0]?.type === 'text'
+      (msg: Message) => msg.role === 'assistant' && msg.content[0]?.type === 'text'
     );
 
     if (assistantMessage) {
