@@ -4,7 +4,7 @@ import { CV_STRUCTURE_INSTRUCTIONS } from '@/utils/cvStructureAssistant';
 import multer from 'multer';
 import FormData from 'form-data';
 import { ASSISTANT_ID, AUTH_HEADER, OPENAI_API_URL } from '@/utils/axiosConfig';
-
+import { Request } from 'multer';
 const upload = multer({ storage: multer.memoryStorage() }); 
 
 export const config = {
@@ -22,7 +22,7 @@ interface Message {
   content: MessageContent[];
 }
 
-const uploadFile = async (req: NextApiRequest, res: NextApiResponse) => {
+const uploadFile = async (req: Request, res: NextApiResponse) => {
   //  middleware multer
   upload.single('file')(req, res, async (err) => {
     if (err) {
@@ -52,7 +52,7 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse) => {
         }
       );
 
-      const fileUploadId = uploadResponse.data.id;
+     const fileUploadId = (uploadResponse.data as { id: string }).id;
       console.log('Uploaded file:', fileUploadId);
       res.status(200).json({ fileUploadId });
     } catch (error) {
@@ -92,7 +92,7 @@ async function createThread(req: NextApiRequest, res: NextApiResponse) {
       }
     );
 
-    const threadId = createThreadResponse.data.id; // get thread_id 
+    const threadId = (createThreadResponse.data as { id: string }).id; // get thread_id 
     console.log('Created thread:', threadId);
     res.status(200).json({ threadId });
   } catch (error) {
@@ -144,7 +144,7 @@ async function getThreadMessages(req: NextApiRequest, res: NextApiResponse) {
       }
     );
 
-    const messages = response.data;
+    const messages = response.data as Message[];
     console.log('Messages:', messages);
     //  res.status(200).json(messages);
     // Cari pesan dari assistant dengan tipe text
@@ -153,7 +153,7 @@ async function getThreadMessages(req: NextApiRequest, res: NextApiResponse) {
     );
 
     if (assistantMessage) {
-      const jsonContent = assistantMessage.content[0].text.value;
+      const jsonContent = assistantMessage.content[0].type;
       const jsonMatch = jsonContent.match(/```json([\s\S]*?)```/);
       
       if (jsonMatch) {
